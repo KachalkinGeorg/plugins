@@ -1,0 +1,19 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: jchat
+Name: AJAX chat
+Version: 0.09
+Acts: index, ppages
+File: jchat.php
+Config: config.php
+Install: install.php
+Deinstall: deinstall.php
+Type: plugin
+Title: AJAX chat
+Description: AJAX based чат для сайта
+Author: Vitaly A. Ponomarev
+Author_URI: http://ngcms.ru/
+Icon: <i class='fa fa-weixin fa-2x'></i>
+Information: Благодаря этому плагину вы сможете добавить на ваш сайт ЧАТ (на базе технологии AJAX)
