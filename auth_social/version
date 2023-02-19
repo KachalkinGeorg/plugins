@@ -1,0 +1,18 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: auth_social
+Name: Social networks auth
+Version: 0.6
+Acts: ppages, action.ppages.uprofile, usermenu
+File: social.php
+Config: config.php
+Install: install.php
+Deinstall: uninstall.php
+Type: plugin
+Description: Аутентификация через ВК, Google, Yandex, Facebook и т.д.
+Author: Rostunov Sergey
+Author_URI: http://rostunov.com/
+Icon: <i class='fa fa-user fa-2x'></i>
+Information: Аутентификация через ВК, Google, Yandex, Facebook и т.д.
