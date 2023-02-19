@@ -1,0 +1,17 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: fin_sms_rb
+Name: Finance :: SMS :: Russian Billing
+Version: 0.01
+Acts: fin_acceptors
+File: fin_sms_rb.php
+Config: config.php
+Install: install.php
+Deinstall: uninstall.php
+Type: plugin
+Description: Пополнение счёта :: SMS :: Russian Billing
+Author: Vitaly A. Ponomarev
+Author_URI: http://2lib.ru/
+Icon: <i class='fa fa-credit-card-alt fa-2x'></i>
