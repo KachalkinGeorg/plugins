@@ -1,0 +1,18 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: complain
+Name: Сообщить о проблеме в новости
+Version: 0.06
+Acts: news_full, ppages
+File: complain.php
+Config: config.php
+Install: install.php
+Deinstall: deinstall.php
+Type: plugin
+Title: Сообщить о проблеме в новости
+Description: Позволяет сообщить автору новости/администратору о проблеме
+Author: Vitaly A. Ponomarev
+Icon: <i class='fa fa-bug fa-2x'></i>
+Information: Плагин complain добавляет новый вид обратной связи с посетителями: посетитель может оставить отчёт о проблеме, обнаруженной в новости.
