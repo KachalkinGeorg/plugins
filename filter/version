@@ -1,0 +1,16 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: filter
+Name: Filter
+Version: 0.04
+Acts: comments:add
+File: filter.php
+Config: config.php
+Type: filter
+Description: Фильтрация нежелательных слов в комментариях
+Author: Vitaly A. Ponomarev
+Author_URI: http://ngcms.ru/
+Icon: <i class='fa fa-commenting-o fa-2x'></i>
+Information: Фильтр нежелательных слов
