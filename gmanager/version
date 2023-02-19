@@ -1,0 +1,16 @@
+ID: gmanager
+Name: Gallery Manager
+Version: 0.01
+Actions: ppages; gmanager.php
+Actions: index; gmanager.php
+Install: install.php
+Deinstall: uninstall.php
+Config: config.php
+Type: plugin
+Title: Gallery Manager
+Description: Позволяет управлять галереями на сайте
+Information: Позволяет управлять галереями на сайте
+Author: Ivan Litvinenko (Amarelius)
+Author_URI: http://arnit.com.ua/
+Icon: <i class='fa fa-file-image-o fa-2x'></i>
+Preinstall: default_no
