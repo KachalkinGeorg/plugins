@@ -1,0 +1,11 @@
+ID: check_pda
+Name: Check Pda
+Version: 0.2
+Acts: core, index
+File: check_pda.php
+Type: plugin
+Description: Check Pda
+Author: Rostunov S. U.
+Author_URI: http://rostunov.com/
+Icon: <i class='fa fa-tablet fa-2x'></i>
+preinstall: no
