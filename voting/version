@@ -1,0 +1,19 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: voting
+Name: Voting manager
+Version: 0.16
+Acts: index, ppages
+File: voting.php
+Install: install.php
+Deinstall: uninstall.php
+Config: config.php
+Type: widget
+Description: Управление голосованиями
+Author: Vitaly A. Ponomarev
+Author_URI: http://ngcms.ru/
+Icon: <i class='fa fa-bullhorn fa-2x'></i>
+Title: Голосование на сайте
+Information: Добавляет блок голосований на сайте, позволяет одновременно проводить несколько голосований и видеть результаты голосований на отдельной страничке.
