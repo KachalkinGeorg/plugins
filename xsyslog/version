@@ -1,0 +1,11 @@
+ID: xsyslog
+Name: Журнал действий пользователей
+Version: 0.2
+Config: config.php
+Type: plugin
+Title: Журнал действий пользователей
+Description: Просмотр журнала действий пользователей
+Author: Rostunov Sergey
+Author_URI: http://rostunov.com
+Icon: <i class='fa fa-info-circle fa-2x'></i>
+preinstall: no
