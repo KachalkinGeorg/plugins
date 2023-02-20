@@ -1,0 +1,13 @@
+ID: text_replace
+Name: Подмена слов на ссылки
+Version: 0.01
+Actions: news; text_replace.php
+Config: config.php
+Type: plugin
+Title: Подмена слов на ссылки
+Description: -
+Information: -
+Author: Nail' R. Davydov (ROZARD)
+Author_URI: http://rozard.ngdemo.ru
+Icon: <i class='fa fa-external-link fa-2x'></i>
+preinstall: no
