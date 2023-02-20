@@ -1,0 +1,12 @@
+ID: ognews
+Name: Open Graph Tags
+Version: 0.04
+Actions: news; ognews.php
+Type: plugin
+Title: ognews example
+Description: ognews example
+Information: ognews example
+Author: Rostunov Sergey,irbees2008
+Author_URI: http://rostunov.com/  https://ngcmshak.ru
+Icon: <i class='fa fa-certificate fa-2x'></i>
+preinstall: no
