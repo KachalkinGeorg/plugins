@@ -1,0 +1,12 @@
+ID: sitemap
+Name: Site Map
+Version: 1.2
+Acts: ppages
+File: sitemap.php
+Config: config.php
+Type: plugin
+Description: Карта сайта
+Author: Wolverine, kt2k
+Author_URI: http://digitalplace.ru/
+Icon: <i class='fa fa-map fa-2x'></i>
+Information: Выводит все ссылки добавленных новостей у Вас на сайте
