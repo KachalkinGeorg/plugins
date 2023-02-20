@@ -1,0 +1,19 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: subscribe_comments
+Name: Подписка на комментарии
+Version: 0.1
+Acts: ppages, comments, news_short, news_full
+File: subscribe_comments.php
+Config: config.php
+Type: plugin
+Title: Подписка на комментарии
+Description: Позволяет подписываться на комментарии
+Author: Rostunov Sergey
+Author_URI: http://rostunov.com
+Icon: <i class='fa fa-comment-o fa-2x'></i>
+Install: install.php
+Deinstall: uninstall.php
+preinstall: no
