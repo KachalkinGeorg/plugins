@@ -1,0 +1,16 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: zgallery
+Name: zGallery
+Version: 0.01
+Acts: index, news_short, news_full
+File: zgallery.php
+Type: plugin
+Description: Управление галереями
+Author: Rostunov Sergey
+Author_URI: http://ngcms.ru/
+Icon: <i class='fa fa-picture-o fa-2x'></i>
+Title: Управление галереями
+Information: Добавляет возможность выводить галереи в шаблонах
