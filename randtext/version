@@ -1,0 +1,15 @@
+;
+; Version description file for plugin @@ ngcms
+;
+
+ID: randtext
+Name: Random Text
+Version: 0.1
+Acts: index
+File: randtext.php
+Config: config.php
+Type: plugin
+Description: Вывод случайной фразы
+Author: Mazikk
+Author_URI: http://2z-project.ru/
+Icon: <i class='fa fa-file-word-o fa-2x'></i>
