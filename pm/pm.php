@@ -268,13 +268,17 @@ function pm_send() {
 
 		return 0;
 	}
+	
+	$title_length = pluginGetVariable('pm', 'title_length') ? pluginGetVariable('pm', 'title_length') : 50;
+	$message_length = pluginGetVariable('pm', 'message_length') ? pluginGetVariable('pm', 'message_length') : 3000;
+		
 	# if some error
 	switch ($status) {
 		case -1:
 			msg(array(
 				"type" => "error",
 				"text" => $lang['pm:msge_title'],
-				"info" => str_replace('{length}', pluginGetVariable('pm', 'title_length'), $lang['pm:msgi_title']) .
+				"info" => str_replace('{length}', $title_length, $lang['pm:msgi_title']) .
 					$lang['pm:html_back']
 			));
 			break;
@@ -290,7 +294,7 @@ function pm_send() {
 			msg(array(
 				"type" => "error",
 				"text" => $lang['pm:msge_message'],
-				"info" => str_replace('{length}', pluginGetVariable('pm', 'message_length'), $lang['pm:msgi_message']) .
+				"info" => str_replace('{length}', $message_length, $lang['pm:msgi_message']) .
 					$lang['pm:html_back']
 			));
 			break;

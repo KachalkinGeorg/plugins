@@ -38,7 +38,7 @@ function plugin_pm_install($action) {
 				array('action' => 'cmodify', 'name' => 'from_id', 'type' => 'int(10)', 'params' => 'NOT NULL'),
 				array('action' => 'cmodify', 'name' => 'to_id', 'type' => 'int(10)', 'params' => 'NOT NULL'),
 				array('action' => 'cmodify', 'name' => 'date', 'type' => 'int(10)', 'params' => 'NOT NULL'),
-				array('action' => 'cmodify', 'name' => 'viewed', 'type' => 'tinyint(1)', 'params' => 'NOT NULL'),
+				array('action' => 'cmodify', 'name' => 'viewed', 'type' => 'tinyint(1)', 'params' => "NOT NULL DEFAULT '0'"),
 				array('action' => 'cmodify', 'name' => 'folder', 'type' => 'varchar(10)', 'params' => 'NOT NULL')
 			)
 		),
