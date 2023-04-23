@@ -43,7 +43,7 @@ function plugin_gsmg_screen() {
         $lm = $mysql->record("select date(from_unixtime(max(postdate))) as pd from " . prefix . "_news");
         $output .= "\t\t<lastmod>" . $lm['pd'] . "</lastmod>\n";
         $output .= "\t\t<priority>" . floatval(extra_get_param('gsmg', 'main_pr')) . "</priority>\n";
-        //$output .= "\t\t<changefreq>daily</changefreq>\n";
+        $output .= "\t\t<changefreq>daily</changefreq>\n";
         $output .= "\t</url>\n";
         if (extra_get_param('gsmg', 'mainp')) {
             $cnt = $mysql->record("select count(*) as cnt from " . prefix . "_news");
@@ -55,7 +55,7 @@ function plugin_gsmg_screen() {
                 $output .= "\t\t<loc>" . $link . "</loc>\n";
                 $output .= "\t\t<lastmod>" . $lm['pd'] . "</lastmod>\n";
                 $output .= "\t\t<priority>" . floatval(extra_get_param('gsmg', 'mainp_pr')) . "</priority>\n";
-               // $output .= "\t\t<changefreq>daily</changefreq>\n";
+                $output .= "\t\t<changefreq>daily</changefreq>\n";
                 $output .= "\t</url>\n";
             }
         }
@@ -70,7 +70,7 @@ function plugin_gsmg_screen() {
             $output .= "\t\t<loc>" . $link . "</loc>\n";
             $output .= "\t\t<lastmod>" . $lm['pd'] . "</lastmod>\n";
             $output .= "\t\t<priority>" . floatval(extra_get_param('gsmg', 'cat_pr')) . "</priority>\n";
-            //$output .= "\t\t<changefreq>daily</changefreq>\n";
+            $output .= "\t\t<changefreq>daily</changefreq>\n";
             $output .= "\t</url>\n";
             if (extra_get_param('gsmg', 'catp')) {
                 $cn = ($catz[$altname]['number'] > 0) ? $catz[$altname]['number'] : $config['number'];
@@ -82,7 +82,7 @@ function plugin_gsmg_screen() {
                     $output .= "\t\t<loc>" . $link . "</loc>\n";
                     $output .= "\t\t<lastmod>" . $lm['pd'] . "</lastmod>\n";
                     $output .= "\t\t<priority>" . floatval(extra_get_param('gsmg', 'catp_pr')) . "</priority>\n";
-                    //$output .= "\t\t<changefreq>daily</changefreq>\n";
+                    $output .= "\t\t<changefreq>daily</changefreq>\n";
                     $output .= "\t</url>\n";
                 }
             }
@@ -99,7 +99,7 @@ function plugin_gsmg_screen() {
             $output .= "\t\t<loc>" . $link . "</loc>\n";
             $output .= "\t\t<lastmod>" . strftime("%Y-%m-%d", max($rec['editdate'], $rec['postdate'])) . "</lastmod>\n";
             $output .= "\t\t<priority>" . floatval(extra_get_param('gsmg', 'news_pr')) . "</priority>\n";
-            //$output .= "\t\t<changefreq>daily</changefreq>\n";
+            $output .= "\t\t<changefreq>daily</changefreq>\n";
             $output .= "\t</url>\n";
 			
         }
@@ -115,7 +115,7 @@ function plugin_gsmg_screen() {
             $output .= "\t\t<loc>" . $link . "</loc>\n";
             $output .= "\t\t<lastmod>" . $lm['pd'] . "</lastmod>\n";
             $output .= "\t\t<priority>" . floatval(extra_get_param('gsmg', 'static_pr')) . "</priority>\n";
-            //$output .= "\t\t<changefreq>weekly</changefreq>\n";
+            $output .= "\t\t<changefreq>weekly</changefreq>\n";
             $output .= "\t</url>\n";
         }
     }
