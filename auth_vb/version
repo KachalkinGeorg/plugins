@@ -1,0 +1,19 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: auth_vb
+Name: vBulletin forum auth
+Version: 0.03
+Acts: auth
+Install: install.php
+Deinstall: uninstall.php
+File: auth_vb.php
+Config: config.php
+Type: auth
+Description: Авторизация пользователей с использованием БД форума vBulletin
+Author: Vitaly A. Ponomarev
+Author_URI: http://ngcms.ru/
+Icon: <i class='fa fa-address-card fa-2x'></i>
+Title: Авторизация через форум vBulletin
+Information: Данный плагин позволяет реализовать интеграцию на уровне пользователей с форумом vBulletin
