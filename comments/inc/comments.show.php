@@ -86,14 +86,15 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 		$tvars['vars']['author'] = $row['author'];
 		$tvars['vars']['author_id'] = $row['author_id'];
 		$tvars['vars']['mail'] = $row['mail'];
-		$tvars['vars']['show_profile'] = print_show_profile($row['author_id'], $row['author'], '');
 		$tvars['vars']['date'] = LangDate($timestamp, $row['postdate']);
 		if ($row['reg'] && getPluginStatusActive('uprofile')) {
+			$tvars['vars']['show_profile'] = print_show_profile($row['author_id'], $row['author'], '');
 			$tvars['vars']['profile_link'] = checkLinkAvailable('uprofile', 'show') ?
 				generateLink('uprofile', 'show', array('name' => $row['author'], 'id' => $row['author_id'])) :
 				generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('id' => $row['author_id']));
 			$tvars['regx']["'\[profile\](.*?)\[/profile\]'si"] = '$1';
 		} else {
+			$tvars['vars']['show_profile'] = '';
 			$tvars['vars']['profile_link'] = '';
 			$tvars['regx']["'\[profile\](.*?)\[/profile\]'si"] = '';
 		}
@@ -255,7 +256,7 @@ function comments_showform($newsID, $callingParams = array()) {
 		$tvars['regx']["'\[captcha\](.*?)\[/captcha\]'si"] = '';
 	}
 	$tvars['vars']['captcha_url'] = admin_url . "/captcha.php";
-	$tvars['vars']['bbcodes'] = BBCodes('content');
+	$tvars['vars']['bbcodes'] = BBCodes();
 	$tvars['vars']['skins_url'] = skins_url;
 	$tvars['vars']['newsid'] = $newsID . '#' . genUToken('comment.add.' . $newsID);
 	$tvars['vars']['request_uri'] = secure_html($_SERVER['REQUEST_URI']);
