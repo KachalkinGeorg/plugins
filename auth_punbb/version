@@ -1,0 +1,20 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: auth_punbb
+Name: punBB forum auth
+Version: 0.05
+Acts: auth
+Install: install.php
+Deinstall: uninstall.php
+File: auth_punbb.php
+Config: config.php
+Type: auth
+Description: Авторизация пользователей с использованием БД форума punBB
+Author: Vitaly A. Ponomarev
+Author_URI: http://ngcms.ru/
+Preinstall: no
+Icon: <i class='fa fa-address-card fa-2x'></i>
+Title: Авторизация через форум punBB
+Information: Авторизация через БД форума punBB [адаптирована для версии 1.2.15]
