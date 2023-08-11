@@ -293,7 +293,7 @@ function plugin_forum_install($action) {
 			}
 			if ($install) {
 				if (fixdb_plugin_install('forum', $db_update, 'install', ($action == 'autoapply') ? true : false)) {
-					if (!$mysql->result('SELECT 1 FROM ' . prefix . '_forum_group')) {
+					if (!is_array($mysql->record('SELECT 1 FROM ' . prefix . '_forum_group'))) {
 						$mysql->query('INSERT INTO ' . prefix . '_forum_group (group_id, group_name, group_color, group_read, group_news, group_search, group_pm) VALUES (\'0\', \'Гость\', \'red\', \'1\', \'1\', \'1\', \'1\')');
 						$mysql->query('INSERT INTO ' . prefix . '_forum_group (group_id, group_name, group_color, group_read, group_news, group_search, group_pm) VALUES (\'1\', \'Администратор\', \'red\', \'1\', \'1\', \'1\', \'1\')');
 						$mysql->query('INSERT INTO ' . prefix . '_forum_group (group_id, group_name, group_color, group_read, group_news, group_search, group_pm) VALUES (\'2\', \'Редактор\', \'red\', \'1\', \'1\', \'1\', \'1\')');
