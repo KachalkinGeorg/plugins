@@ -41,6 +41,7 @@ function plugin_comments_install($action) {
 				array('action' => 'cmodify', 'name' => 'id', 'type' => 'int', 'params' => 'not null auto_increment'),
 				array('action' => 'cmodify', 'name' => 'postdate', 'type' => 'int', 'params' => "default '0'"),
 				array('action' => 'cmodify', 'name' => 'post', 'type' => 'int', 'params' => "default '0'"),
+				array('action' => 'cmodify', 'name' => 'approve', 'type' => 'tinyint(1)', 'params' => "default '0'"),
 				array('action' => 'cmodify', 'name' => 'name', 'type' => 'char(100)', 'params' => "default ''"),
 				array('action' => 'cmodify', 'name' => 'author', 'type' => 'char(100)', 'params' => "default ''"),
 				array('action' => 'cmodify', 'name' => 'author_id', 'type' => 'int', 'params' => "default '0'"),
@@ -74,6 +75,7 @@ function plugin_comments_install($action) {
 			// Now we need to set some default params
 			$params = array(
 				'regonly'            => 0,
+				'moderate'           => 0,
 				'backorder'          => 0,
 				'maxlen'             => 500,
 				'maxwlen'            => 50,

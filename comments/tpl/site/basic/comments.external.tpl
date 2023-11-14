@@ -1,31 +1,33 @@
-<h2 class="section-title"><a href="{link}">{title}</a></h2>
-<p>Все комментарии посетителей к записи</p>
-
-<section class="section comments-list">
-
-	<ul class="list-unstyled">
-		{entries}
-		<li id="new_comments"></li>
-	</ul>
-
-	<nav class="section">
-        <ul class="pagination justify-content-center">
-            {more_comments}
-        </ul>
-	</nav>
-
-	{form}
-
+<div class="body">
+	<div id="comments">
+		<div class="title"><a href="{link}">{title}</a></div>
+	</div>
+</div>
+<div id="comments">
+	[comheader]
+	<div class="title">Все комментарии посетителей к данной новости: {comnum}</div>
+	<a class="btn" href="{link}">Назад</a>
+	[/comheader]
+	<!-- Here is user's comments -->
+	<div id="new_comments_rev"></div>
+	{entries}
+	<!-- Here is `add comments` form -->
 	[regonly]
-	<div class="alert alert-info">
-		Уважаемый посетитель, Вы зашли на сайт как незарегистрированный пользователь.<br />
-		Мы рекомендуем Вам <a href="{home}/register/">зарегистрироваться</a> либо <a href="{home}/login/">войти</a> на сайт под своим именем.
+	<div class="ng-message">
+	Уважаемый посетитель, Вы зашли на сайт как незарегистрированный пользователь.<br/>
+	Мы рекомендуем Вам <a href="/register/">зарегистрироваться</a> либо <a href="/login/">войти</a> на сайт под своим
+	именем.
 	</div>
 	[/regonly]
-
 	[commforbidden]
-	<div class="alert alert-info">
-		Комментирование данной новости запрещено.
-	</div>
+	<div class="ng-message">Комментирование данной новости запрещено.</div>
 	[/commforbidden]
-</section>
+	[more_comments]
+	<div class="paginator nonebr" style="margin-top: 25px; margin-bottom: 25px;">
+		<ul>
+			<li>{more_comments}</li>
+		</ul>
+	</div>
+	[/more_comments]
+	{form}
+</div>

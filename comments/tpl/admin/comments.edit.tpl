@@ -1,4 +1,4 @@
-
+<form name="form" method="post">
     <input type="hidden" name="comid" value="{{ comid }}" />
     <input type="hidden" name="postid" value="{{ postid }}" />
     <input type="hidden" name="subaction" value="doeditcomment" />
@@ -6,9 +6,9 @@
     <div class="row">
         <div class="col-sm-8">
             <!-- MAIN CONTENT -->
-            <div class="panel panel-default">
+            <div class="panel panel-default mb-4">
                 <div class="panel-heading">
-                    <h4 class="panel-title"><i class="fa fa-th-list"></i> {{ lang['maincontent'] }}</h4>
+                    <i class="fa fa-th-list"></i> {{ lang['comments:maincontent'] }}
                 </div>
                 <div id="maincontent" class="panel-body">
                     <div class="form-group">
@@ -36,24 +36,25 @@
                     </div>
                     <div class="form-group" id="fullwidth">
                         <div class="col-sm-12">
-                            {{ bbcodes }}
+                            {{ quicktags }}
                             <!-- SMILES -->
-                                <div id="modal-smiles" class="modal fade" tabindex="-1" role="dialog">
-                                    <div class="modal-dialog modal-sm" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                <h4>Вставить смайл</h4>
-                                            </div>
-                                            <div class="modal-body text-center smiles">
-                                                {{ smilies }}
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="cancel" class="btn btn-default" data-dismiss="modal">{{ lang['cancel'] }}</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+					<div id="modal-smiles" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="smiles-modal-label" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 id="smiles-modal-label" class="modal-title">{{ lang['comments:ins.smilies'] }}</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								</div>
+								<div class="modal-body">
+									{{ smilies }}
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-outline-dark" data-dismiss="modal">{{ lang['comments:cansel'] }}</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					
                             <textarea name="content" id="content" rows="8" class="form-control">{{ text }}</textarea>
                         </div>
                     </div>
@@ -69,7 +70,7 @@
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
                             <label for="approve">
-                                <input type="checkbox" id="approve" name="approve" value="1" {% if (1 == approve) %}checked{% endif %} />&nbsp;Опубликовать
+                                <input type="checkbox" id="approve" name="approve" value="1" {% if (1 == approve) %}checked{% endif %} />&nbsp;{{ moder1 }}
                             </label>
                         </div>
                     </div>
@@ -91,10 +92,10 @@
         </div>
         
         <!-- Right edit column -->
-        <div id="rightBar" class="col-sm-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">{{ lang['comments:additional'] }}</h4>
+        <div id="rightBar" class="col col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    {{ lang['comments:additional'] }}
                 </div>
                 <table class="table table-condensed">
                     <tbody>
@@ -117,4 +118,7 @@
             </div>
         </div>
     </div>
-    
+</form>
+<script type="text/javascript">
+	var currentInputAreaID = 'content';
+</script>

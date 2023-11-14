@@ -33,7 +33,7 @@ function comments_add() {
 		$is_member = 1;
 		$memberRec = $userROW;
 	} else {
-		$SQL['author'] = secure_html(convert(trim($_POST['name'])));
+		$SQL['author'] = secure_html(trim($_POST['name']));
 		$SQL['author_id'] = 0;
 		$SQL['mail'] = secure_html(trim($_POST['mail']));
 		$is_member = 0;
@@ -49,7 +49,7 @@ function comments_add() {
 
 		return;
 	}
-	$SQL['text'] = secure_html(trim($_POST['content']));
+	$SQL['text'] = secure_html($_POST['content']);
 	// If user is not logged, make some additional tests
 	if (!$is_member) {
 		// Check if unreg are allowed to make comments
@@ -69,6 +69,7 @@ function comments_add() {
 			// Update captcha
 			$_SESSION['captcha'] = rand(00000, 99999);
 		}
+
 		if (!$SQL['author']) {
 			msg(array("type" => "error", "text" => $lang['comments:err.name']));
 
@@ -99,12 +100,18 @@ function comments_add() {
 			}
 		}
 	}
-	$maxlen = intval(pluginGetVariable('comments', 'maxlen'));
-	if (($maxlen) && (strlen($SQL['text']) > $maxlen || strlen($SQL['text']) < 2)) {
-		msg(array("type" => "error", "text" => str_replace('{maxlen}', pluginGetVariable('comments', 'maxlen'), $lang['comments:err.badtext'])));
 
+    $maxlen = (int)pluginGetVariable('comments', 'maxlen');
+    $maxlen = ($maxlen > 4) ? $maxlen : 500;
+    $minlen = (int)pluginGetVariable('comments', 'minlen');
+    $minlen = ($minlen > 0 and $minlen < $maxlen) ? $minlen : 4;
+    $curlen = (int)mb_strlen($SQL['text'], 'UTF-8');
+    if ($minlen > $curlen or $curlen > $maxlen) {
+		msg(array("type" => "error", "text" => str_replace(array ('{minlen}', '{maxlen}' ), array ($minlen, $maxlen ), $lang['comments:err.badtext'])));
 		return;
-	}
+    }
+    unset($maxlen,$minlen,$curlen);
+
 	// Check for flood
 	if (checkFlood(0, $ip, 'comments', 'add', $is_member ? $memberRec : null, $is_member ? null : $SQL['author'])) {
 		msg(array("type" => "error", "text" => str_replace('{timeout}', $config['flood_time'], $lang['comments:err.flood'])));
@@ -192,7 +199,7 @@ function comments_add() {
 	$SQL['reg'] = ($is_member) ? '1' : '0';
 	// RUN interceptors
 	load_extras('comments:add');
-	if (is_array($PFILTERS['comments']))
+	if (isset($PFILTERS['comments']) and is_array($PFILTERS['comments'])) {
 		foreach ($PFILTERS['comments'] as $k => $v) {
 			$pluginResult = $v->addComments($memberRec, $news_row, $tvars, $SQL);
 			if ((is_array($pluginResult) && ($pluginResult['result'])) || (!is_array($pluginResult) && $pluginResult))
@@ -201,6 +208,14 @@ function comments_add() {
 
 			return 0;
 		}
+	}
+	
+    $moderate = (1 == pluginGetVariable('comments', 'moderate') and (empty($userROW['status']) or $userROW['status'] > 1)) ? true : false;
+
+    if (!$moderate) {
+        $SQL['approve'] = 1;
+    }
+	
 	// Create comment
 	$vnames = array();
 	$vparams = array();
@@ -211,18 +226,24 @@ function comments_add() {
 	$mysql->query("insert into " . prefix . "_comments (" . implode(",", $vnames) . ") values (" . implode(",", $vparams) . ")");
 	// Retrieve comment ID
 	$comment_id = $mysql->result("select LAST_INSERT_ID() as id");
+		
 	// Update comment counter in news
-	$mysql->query("update " . prefix . "_news set com=com+1 where id=" . db_squote($SQL['post']));
+    if (!$moderate) {
+        $mysql->query("update " . prefix . "_news set com=com+1 where id=" . db_squote($SQL['post']));
+    }
+	
 	// Update counter for user
-	if ($SQL['author_id']) {
+	if ($SQL['author_id'] and !$moderate) {
 		$mysql->query("update " . prefix . "_users set com=com+1 where id = " . db_squote($SQL['author_id']));
 	}
 	// Update flood protect database
 	checkFlood(1, $ip, 'comments', 'add', $is_member ? $memberRec : null, $is_member ? null : $SQL['author']);
 	// RUN interceptors
-	if (is_array($PFILTERS['comments']))
-		foreach ($PFILTERS['comments'] as $k => $v)
+	if (isset($PFILTERS['comments']) and is_array($PFILTERS['comments'])) {
+		foreach ($PFILTERS['comments'] as $k => $v) {
 			$v->addCommentsNotify($memberRec, $news_row, $tvars, $SQL, $comment_id);
+        }
+    }
 	// Email informer
 	if (pluginGetVariable('comments', 'inform_author') || pluginGetVariable('comments', 'inform_admin')) {
 		$alink = ($SQL['author_id']) ? generatePluginLink('uprofile', 'show', array('name' => $SQL['author'], 'id' => $SQL['author_id']), array(), false, true) : '';

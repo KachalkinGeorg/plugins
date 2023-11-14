@@ -1,25 +1,49 @@
-<li class="comment clearfix {{ alternating }}" itemscope="" itemtype="http://schema.org/Comment">
-    <a id="comment_{{ id }}"></a>
-    <div class="comment-content post-content" itemprop="text">
-        <img src="{{ avatar }}" alt="" class="rounded-circle pull-left" width="80" />
-        <div class="comment-meta">
-            {% if (useBB) %}
-                <a href="#" rel="nofollow" onmouseover="copy_quote('{{ author }}');" onclick="quote();return false;" class="comment-reply-link"><span>{{ lang['comments:quote'] }}</span></a>
-            {% endif %}
-            {% if (havePerm) %}
-                <a href="{{ edit_link }}" class="comment-reply-link"><span>{{ lang['comments:edit'] }}</span></a>
-                <a href="#" onclick="confirmIt('{{ delete_link }}', '{{ lang['sure_del'] }}');return false;" class="comment-reply-link"><span>{{ lang['comments:comdelete'] }}</span></a>
-            {% endif %}
-            <div class="comment-author">
-                {% if (isProfile) %}
-                <a href="{{ profile_link }}" title="{{ lang['comments:profile'] }}" class="comment-author-link"><span itemprop="author">{{ author }}</span></a>
-                {% else %}
-                    <span itemprop="author">{{ author }}</span>
-                {% endif %}
-            </div>
-            <small title="{{ date }}">&nbsp;•&nbsp;{{ dateStamp | cdate  }}</small>
-            <p>{{ comment }}</p>
-            {% if (hasAnswer) %}<p class="well well-sm text-muted">{{ lang['comments:answer'] }} <b>{{ name }}</b>:<br />{{ answer }}</p>{% endif %}
-        </div>
-    </div>
-</li>
+<div id="comment_{id}" class="comment {alternating}" itemscope="" itemtype="http://schema.org/Comment">
+	<div>
+		<div>
+			<div>
+				<div class="avatar">
+					{avatar}
+				</div>
+				<div class="head">
+					<div class="num" style="float: right;">#{comnum}</div>
+					{line} [profile]<a href="#{author_id}" title="{l_profile}"><span itemprop="author">{author}</span></a>{show_profile}[/profile]<br />
+					<div><span itemprop="dateCreated">{date}</span>&nbsp;<small title="{date}">&nbsp;•&nbsp;{dateStamp}</small></div>
+				</div>
+
+				[if-have-perm]
+				<ul class="actions">
+					[quote]<li><a onmouseover="copy_quote('{author}');" onclick="quote();return false;" style="cursor: pointer;" class="quotes">{l_quote}</a></li>[/quote]
+					[quote]<li><a rel="nofollow" onmouseover="copy_quote('{author}');" onclick="quote();return false;" style="cursor: pointer;">Ответить</a></li>[/quote]
+					<li>[edit-com]Изменить[/edit-com]</li>
+					<li>[del-com]Удалить[/del-com]
+						<div class="modal">
+							<div class="modal-close" onclick="this.parentNode.style.display='none';"><i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></div>
+								<div style="padding: 22px;">
+								<div style="text-align: center;">Удалить комментарий <b>#{comnum}</b>?</div>
+								<br>
+								Вы действительно хотите удалить комментарий от <b>{author}</b>?
+								<br><br>
+								<div style="text-align: right;">{delcom}</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+				[/if-have-perm]
+
+				<span itemprop="text">{comment-short}</span>
+				[comment_full]
+					<span id="comment_full{comnum}" itemprop="text" style="display: none;">{comment-full}</span>
+					<p style="text-align: right;"><a href="javascript:ShowOrHide('comment_full{comnum}');">{l_showhide}</a></p>
+				[/comment_full]
+			
+				[answer]
+					<br clear="all" /><div class="signature">---------------------------</div><div class="slink">{answer}</div>
+					<div><i>{l_answer}</i> <b>{name}</b></div>
+				[/answer]
+			
+				<div class="clr"></div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -38,19 +38,22 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 	} else {
 		$templateName = 'comments.show';
 	}
+	
 	$tpl->template($templateName, $templatePath);
+	
 	$joinFilter = array();
 	if ($config['use_avatars']) {
 		$joinFilter = array('users' => array('fields' => array('avatar')));
 	}
 	// RUN interceptors
-	if (isset($PFILTERS['comments']) && is_array($PFILTERS['comments']))
+	if (isset($PFILTERS['comments']) && is_array($PFILTERS['comments'])) {
 		foreach ($PFILTERS['comments'] as $k => $v) {
 			$xcfg = $v->commentsJoinFilter();
 			if (is_array($xcfg) && isset($xcfg['users']) && isset($xcfg['users']['fields']) && is_array($xcfg['users']['fields'])) {
 				$joinFilter['users']['fields'] = array_unique(array_merge($joinFilter['users']['fields'], $xcfg['users']['fields']));
 			}
 		}
+	}
 	//print "ARRAY CFG: <pre>".var_export($joinFilter, true)."</pre>";
 	function _cs_am($k) {
 
@@ -65,21 +68,35 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 	} else {
 		$sql = "select c.* from " . prefix . "_comments c WHERE c.post=" . db_squote($newsID) . ($commID ? (" and c.id=" . db_squote($commID)) : '');
 	}
+	
+    $moderate = (1 == pluginGetVariable('comments', 'moderate')) ? true : false;
+    if ($moderate) {
+        $sql .= " and c.approve='1'";
+    }
+
 	$sql .= " order by c.id" . (pluginGetVariable('comments', 'backorder') ? ' desc' : '');
+	
 	// Comments counter
 	$comnum = 0;
 	// Check if we need to use limits
 	$limitStart = isset($callingParams['limitStart']) ? intval($callingParams['limitStart']) : 0;
 	$limitCount = isset($callingParams['limitCount']) ? intval($callingParams['limitCount']) : 0;
+	
 	if ($limitStart || $limitCount) {
 		$sql .= ' limit ' . $limitStart . ", " . $limitCount;
 		$comnum = $limitStart;
 	}
+	
 	$timestamp = pluginGetVariable('comments', 'timestamp');
-	if (!$timestamp)
+	if (!$timestamp) {
 		$timestamp = 'j.m.Y - H:i';
+	}
+	
 	$output = '';
-	foreach ($mysql->select($sql) as $row) {
+	
+    $rows = $mysql->select($sql);
+
+    foreach ($rows as $row) {
 		
 		$comnum++;
 		$tvars['vars']['id'] = $row['id'];
@@ -87,6 +104,8 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 		$tvars['vars']['author_id'] = $row['author_id'];
 		$tvars['vars']['mail'] = $row['mail'];
 		$tvars['vars']['date'] = LangDate($timestamp, $row['postdate']);
+		$tvars['vars']['dateStamp'] = cDate($row['postdate']);
+		
 		if ($row['reg'] && getPluginStatusActive('uprofile')) {
 			$tvars['vars']['show_profile'] = print_show_profile($row['author_id'], $row['author'], '');
 			$tvars['vars']['profile_link'] = checkLinkAvailable('uprofile', 'show') ?
@@ -96,35 +115,33 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 		} else {
 			$tvars['vars']['show_profile'] = '';
 			$tvars['vars']['profile_link'] = '';
-			$tvars['regx']["'\[profile\](.*?)\[/profile\]'si"] = '';
+			$tvars['regx']["'\[profile\](.*?)\[/profile\]'si"] = '<span title="гость">'.$row['author'].'</span>';
 		}
 
 		$tvars['vars']['line'] = on_of_line($row['author_id']);
 
 		// Add [hide] tag processing
 		$text = $row['text'];
+		
 		if ($config['blocks_for_reg']) {
 			$text = $parse->userblocks($text);
 		}
+		
 		if ($config['use_bbcodes']) {
 			$text = $parse->bbcodes($text);
 		}
+		
 		if ($config['use_htmlformatter']) {
 			$text = $parse->htmlformatter($text);
 		}
+		
 		if ($config['use_smilies']) {
 			$text = $parse->smilies($text);
 		}
-		/*
-		if (intval($config['com_wrap']) && (strlen($text) > $config['com_wrap'])) {
-			$tvars['vars']['comment-short']	=	mb_substr($text, 0, $config['com_wrap']);
-			$tvars['vars']['comment-full']	=	mb_substr($text, $config['com_wrap']);
-			$tvars['regx']["'\[comment_full\](.*?)\[/comment_full\]'si"] = '$1';
-		} else {
-		*/
+
 		$tvars['vars']['comment-short'] = $text;
 		$tvars['regx']["'\[comment_full\](.*?)\[/comment_full\]'si"] = '';
-		/* } */
+
 		if ($commID && $commDisplayNum) {
 			$tvars['vars']['comnum'] = $commDisplayNum;
 		} else {
@@ -134,7 +151,9 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 				$tvars['vars']['comnum'] = $comnum;
 			}
 		}
+		
 		$tvars['vars']['alternating'] = ($comnum % 2) ? "comment_even" : "comment_odd";
+		
 		if ($config['use_avatars']) {
 			if ($row['users_avatar']) {
 				$tvars['vars']['avatar'] = "<img src=\"" . avatars_url . "/" . $row['users_avatar'] . "\" alt=\"" . $row['author'] . "\" />";
@@ -149,11 +168,13 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 		} else {
 			$tvars['vars']['avatar'] = '';
 		}
+		
 		if ($config['use_bbcodes']) {
 			$tvars['regx']["'\[quote\](.*?)\[/quote\]'si"] = '$1';
 		} else {
 			$tvars['regx']["'\[quote\](.*?)\[/quote\]'si"] = '';
 		}
+		
 		if ($row['answer'] != '') {
 			$answer = $row['answer'];
 			if ($config['blocks_for_reg']) {
@@ -174,12 +195,15 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 		} else {
 			$tvars['regx']["'\[answer\](.*?)\[/answer\]'si"] = '';
 		}
+		
 		if (is_array($userROW) && (($userROW['status'] == 1) || ($userROW['status'] == 2))) {
-			$edit_link = "?mod=editcomments&amp;newsid=" . $newsID . "&amp;comid=" . $row['id'];
+			$edit_link = admin_url ."/admin.php?mod=editcomments&amp;newsid=" . $newsID . "&amp;comid=" . $row['id'];
+			//$edit_link = admin_url."/admin.php?mod=extra-config&plugin=comments&action=edit&comid=".$row['id'];
 			$delete_link = generateLink('core', 'plugin', array('plugin' => 'comments', 'handler' => 'delete'), array('id' => $row['id'], 'uT' => genUToken($row['id'])), true);
 			$tvars['vars']['[edit-com]'] = "<a href=\"" . $edit_link . "\" target=\"_blank\" title=\"" . $lang['addanswer'] . "\">";
 			$tvars['vars']['[/edit-com]'] = "</a>";
-			$tvars['vars']['[del-com]'] = "<a href=\"#del_message\" onclick=\"show_alert(this)\" tabindex=\"-1\" title=\"" . $lang['comdelete'] . "\">";
+			//$tvars['vars']['[del-com]'] = "<a href=\"" . $delete_link . "\" target=\"_blank\" title=\"" . $lang['comdelete'] . "\">";
+			$tvars['vars']['[del-com]'] = "<a id=\"del_com\" href=\"#\" onclick=\"show_alert(this)\" tabindex=\"-1\" title=\"" . $lang['comdelete'] . "\">";
 			$tvars['vars']['[/del-com]'] = "</a>";
 			$tvars['vars']['delcom'] = "<a class=\"bbcodes\" style=\"color: rgb(255 250 250);\" href=\"" . $delete_link . "\" title=\"" . $lang['comdelete'] . "\">Да</a>";
 			$tvars['vars']['ip'] = "<a href=\"http://www.nic.ru/whois/?ip=$row[ip]\" title=\"" . $lang['whois'] . "\">" . $lang['whois'] . "</a>";
@@ -191,8 +215,10 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 			$tvars['vars']['ip'] = '';
 			$tvars['regx']['#\[if-have-perm\].*?\[\/if-have-perm\]#si'] = '';
 		}
+		
 		$tvars['regx']['#\[is-logged\](.+?)\[/is-logged\]#is'] = is_array($userROW) ? '$1' : '';
 		$tvars['regx']['#\[isnt-logged\](.+?)\[/isnt-logged\]#is'] = is_array($userROW) ? '' : '$1';
+		
 		// RUN interceptors
 		if (isset($PFILTERS['comments']) && is_array($PFILTERS['comments']))
 			foreach ($PFILTERS['comments'] as $k => $v)

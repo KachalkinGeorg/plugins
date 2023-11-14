@@ -141,6 +141,7 @@ class CommentsNewsFilter extends NewsFilter {
 		$tcvars = array();
 		// Show comments [ if not skipped ]
 		$tcvars['vars']['entries'] = $skipCommShow ? '' : comments_show($newsID, 0, 0, $callingCommentsParams);
+		
 		// If multipage is used and we have more comments - show
 		if ($flagMoreComments) {
 			$link = checkLinkAvailable('comments', 'show') ?
@@ -220,7 +221,7 @@ class CommentsFilterAdminCategories extends FilterAdminCategories {
 
 function plugin_comments_add() {
 
-	global $config, $catz, $catmap, $tpl, $template, $lang, $SUPRESS_TEMPLATE_SHOW;
+	global $config, $catz, $catmap, $tpl, $template, $lang, $SUPRESS_TEMPLATE_SHOW, $userROW;
 	$SUPRESS_TEMPLATE_SHOW = 1;
 	// Connect library
 	include_once(root . "/plugins/comments/inc/comments.show.php");
@@ -254,9 +255,11 @@ function plugin_comments_add() {
 			if (is_dir($templatePath . '/ncustom/' . $ctname))
 				$callingCommentsParams['overrideTemplatePath'] = $templatePath . '/ncustom/' . $ctname;
 		}
+		$moderate = (1 == pluginGetVariable('comments', 'moderate') and (empty($userROW['status']) or $userROW['status'] > 1)) ? true : false;
 		$output = array(
 			'status' => 1,
 			'rev'    => intval(pluginGetVariable('comments', 'backorder')),
+			'moderate' => ($moderate) ? $lang['comments:msg_add_moderate'] : $lang['comments:msg_add_success'],
 			'data'   => comments_show($SQLnews['id'], $commentId, $SQLnews['com'] + 1, $callingCommentsParams)
 		);
 		print json_encode($output);
@@ -266,6 +269,7 @@ function plugin_comments_add() {
 	} else {
 		// Some errors.
 		if ($_REQUEST['ajax']) {
+			$moderate = (1 == pluginGetVariable('comments', 'moderate') and (empty($userROW['status']) or $userROW['status'] > 1)) ? true : false;
 			// AJAX MODE
 			// Set default template path [from site template / comments plugin subdirectory]
 			$templatePath = tpl_site . 'plugins/comments';
@@ -273,6 +277,7 @@ function plugin_comments_add() {
 			$tpl->vars('comments.error', array('vars' => array('content' => $template['vars']['mainblock'])));
 			$output = array(
 				'status' => 0,
+				'moderate' => ($moderate) ? $lang['comments:msg_add_moderate'] : $lang['comments:msg_add_success'],
 				'data'   => $tpl->show('comments.error')
 			);
 			print json_encode($output);
@@ -326,13 +331,19 @@ function plugin_comments_show() {
 	// Check if we need pagination
 	$page = 0;
 	$pageCount = 0;
+	
+	$moderate = (1 == pluginGetVariable('comments', 'moderate')) ? 1 : 0;
+	$query = "SELECT COUNT(*) as cnt FROM " . prefix . "_comments where approve=".$moderate;
+	$res = $mysql->record($query, 1);
+	$comment = $res['cnt'];
+	
 	// If we have comments more than for one page - activate pagination
 	$multi_scount = intval(pluginGetVariable('comments', 'multi_scount'));
 	if (($multi_scount > 0) && ($newsRow['com'] > $multi_scount)) {
 		// Page count
 		$pageCount = ceil($newsRow['com'] / $multi_scount);
 		// Check if user wants to access not first page
-		$page = intval($_REQUEST['page']);
+		$page = isset($_REQUEST['page']) ? intval($_REQUEST['page']) : '1';
 		if ($page < 1) $page = 1;
 		$callingCommentsParams['limitCount'] = intval(pluginGetVariable('comments', 'multi_scount'));
 		$callingCommentsParams['limitStart'] = ($page - 1) * intval(pluginGetVariable('comments', 'multi_scount'));
@@ -341,6 +352,7 @@ function plugin_comments_show() {
 	$callingCommentsParams['total'] = $newsRow['com'];
 	// Show comments
 	$tcvars = array();
+	$tcvars['vars']['comnum'] = $newsRow['com'];
 	$tcvars['vars']['entries'] = comments_show($newsID, 0, 0, $callingCommentsParams);
 	if ($pageCount > 1) {
 		$paginationParams = checkLinkAvailable('comments', 'show') ?
@@ -371,7 +383,7 @@ function plugin_comments_show() {
 	// Show header file
 	$tcvars['vars']['link'] = newsGenerateLink($newsRow);
 	$tcvars['vars']['title'] = secure_html($newsRow['title']);
-	$tcvars['regx']['[\[comheader\](.*)\[/comheader\]]'] = ($newsRow['com']) ? '$1' : '';
+	$tcvars['regx']['#\[comheader\](.*)\[\/comheader\]#is'] = ($newsRow['com']) ? '$1' : '';
 	$tpl->template('comments.external', $templatePath);
 	$tpl->vars('comments.external', $tcvars);
 	$template['vars']['mainblock'] .= $tpl->show('comments.external');
