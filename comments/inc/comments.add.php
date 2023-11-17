@@ -210,10 +210,10 @@ function comments_add() {
 		}
 	}
 	
-    $moderate = (1 == pluginGetVariable('comments', 'moderate') and (empty($userROW['status']) or $userROW['status'] > 1)) ? true : false;
+    $moderate = (1 == pluginGetVariable('comments', 'moderate') && (empty($userROW['status']) || $userROW['status'] > 1)) ? true : false;
 
     if (!$moderate) {
-        $SQL['approve'] = 1;
+        $SQL['approve'] = pluginGetVariable('comments', 'moderate') ? 1 : 0;
     }
 	
 	// Create comment
