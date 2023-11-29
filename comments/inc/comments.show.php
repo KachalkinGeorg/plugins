@@ -203,7 +203,8 @@ function comments_show($newsID, $commID = 0, $commDisplayNum = 0, $callingParams
 			$tvars['vars']['[edit-com]'] = "<a href=\"" . $edit_link . "\" target=\"_blank\" title=\"" . $lang['addanswer'] . "\">";
 			$tvars['vars']['[/edit-com]'] = "</a>";
 			//$tvars['vars']['[del-com]'] = "<a href=\"" . $delete_link . "\" target=\"_blank\" title=\"" . $lang['comdelete'] . "\">";
-			$tvars['vars']['[del-com]'] = "<a id=\"del_com\" href=\"#\" onclick=\"show_alert(this)\" tabindex=\"-1\" title=\"" . $lang['comdelete'] . "\">";
+			//$tvars['vars']['[del-com]'] = "<a id=\"del_com\" href=\"#\" onclick=\"show_alert(this)\" tabindex=\"-1\" title=\"" . $lang['comdelete'] . "\">";
+			$tvars['vars']['[del-com]'] = "<a href=\"#delcom".$row['id']."\" title=\"" . $lang['comdelete'] . "\">";
 			$tvars['vars']['[/del-com]'] = "</a>";
 			$tvars['vars']['delcom'] = "<a class=\"bbcodes\" style=\"color: rgb(255 250 250);\" href=\"" . $delete_link . "\" title=\"" . $lang['comdelete'] . "\">Да</a>";
 			$tvars['vars']['ip'] = "<a href=\"http://www.nic.ru/whois/?ip=$row[ip]\" title=\"" . $lang['whois'] . "\">" . $lang['whois'] . "</a>";

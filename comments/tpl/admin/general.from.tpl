@@ -1,21 +1,19 @@
 <form name="form" method="post">
-
-	<div class="navbar-default navbar-component">
-	<ul class="nav nav-tabs nav-fill mb-3 d-md-flex d-block" role="tablist">
-		<li class="nav-item"><a href="#userTabs-com" class="nav-link active" data-toggle="tab"><span data-toggle="popover" data-placement="top" data-trigger="hover focus" data-content="{{ lang['comments:group.general'] }}"><i class="fa fa-database"></i> {{ lang['comments:general'] }}</span></a></li>
-		<li class="nav-item"><a href="#userTabs-global" class="nav-link" data-toggle="tab"><span data-toggle="popover" data-placement="top" data-trigger="hover focus" data-content="{{ lang['comments:group.default'] }}"><i class="fa fa-lock"></i> {{ lang['comments:default'] }}</span></a></li>
-		<li class="nav-item"><a href="#userTabs-multi" class="nav-link" data-toggle="tab"><span data-toggle="popover" data-placement="top" data-trigger="hover focus" data-content="{{ lang['comments:group.multipag'] }}"><i class="fa fa-th-large"></i> {{ lang['comments:multipag'] }}</span></a></li>
-		<li class="nav-item"><a href="#userTabs-inform" class="nav-link" data-toggle="tab"><span data-toggle="popover" data-placement="top" data-trigger="hover focus" data-content="{{ lang['comments:group.inform'] }}"><i class="fa fa-bullhorn"></i> {{ lang['comments:inform'] }}</span></a></li>
-	</ul>
+<div class="panel panel-default">
+		
+	<div class="panel-heading" style="padding: 0px;margin-bottom: 0;">
+		<ul class="nav nav-tabs nav-fill">
+			<li class="nav-item"><a href="#userTabs-com" class="nav-link active" data-toggle="tab"><span data-toggle="popover" data-placement="top" data-trigger="hover focus" data-content="{{ lang['comments:group.general'] }}"><i class="fa fa-database"></i> {{ lang['comments:general'] }}</span></a></li>
+			<li class="nav-item"><a href="#userTabs-global" class="nav-link" data-toggle="tab"><span data-toggle="popover" data-placement="top" data-trigger="hover focus" data-content="{{ lang['comments:group.default'] }}"><i class="fa fa-lock"></i> {{ lang['comments:default'] }}</span></a></li>
+			<li class="nav-item"><a href="#userTabs-multi" class="nav-link" data-toggle="tab"><span data-toggle="popover" data-placement="top" data-trigger="hover focus" data-content="{{ lang['comments:group.multipag'] }}"><i class="fa fa-th-large"></i> {{ lang['comments:multipag'] }}</span></a></li>
+			<li class="nav-item"><a href="#userTabs-inform" class="nav-link" data-toggle="tab"><span data-toggle="popover" data-placement="top" data-trigger="hover focus" data-content="{{ lang['comments:group.inform'] }}"><i class="fa fa-bullhorn"></i> {{ lang['comments:inform'] }}</span></a></li>
+		</ul>
 	</div>
 	
-	<div id="userTabs" class="tab-content">
-	
+	<div class="panel-body">
+		<div class="tab-content">
+		
 		<div id="userTabs-com" class="tab-pane show active">
-		<div class="panel panel-default">
-		<div class="panel-heading">{{ lang['comments:general'] }}</div>
-		<div class="panel-body">{{ lang['comments:group.general'] }}</div>
-		<div class="table-responsive">
 			<table class="table table-striped">
 				<tr>
 					<td width="50%">{{ lang['comments:regonly'] }} <small class="form-text text-muted">{{ lang['comments:regonly#desc'] }}</small></td>
@@ -59,15 +57,8 @@
 				</tr>
 			</table>
 		</div>
-		</div>
-		</div>
 	
-	
-	<div id="userTabs-global" class="tab-pane">
-		<div class="panel panel-default">
-		<div class="panel-heading">{{ lang['comments:default'] }}</div>
-		<div class="panel-body">{{ lang['comments:group.default'] }}</div>
-		<div class="table-responsive">
+		<div id="userTabs-global" class="tab-pane">
 			<table class="table table-striped">
 				<tr>
 					<td width="50%">{{ lang['comments:global_default'] }} <small class="form-text text-muted">{{ lang['comments:global_default#desc'] }}</small></td>
@@ -83,14 +74,8 @@
 				</tr>
 			</table>
 		</div>
-		</div>
-	</div>
 	
-	<div id="userTabs-multi" class="tab-pane">
-		<div class="panel panel-default">
-		<div class="panel-heading">{{ lang['comments:multipag'] }}</div>
-		<div class="panel-body">{{ lang['comments:group.multipag'] }}</div>
-		<div class="table-responsive">
+		<div id="userTabs-multi" class="tab-pane">
 			<table class="table table-striped">
 				<tr>
 					<td width="50%">{{ lang['comments:multipage'] }} <small class="form-text text-muted">{{ lang['comments:multipage#desc'] }}</small></td>
@@ -106,14 +91,8 @@
 				</tr>
 			</table>
 		</div>
-		</div>
-	</div>
 
-	<div id="userTabs-inform" class="tab-pane">
-		<div class="panel panel-default">
-		<div class="panel-heading">{{ lang['comments:inform'] }}</div>
-		<div class="panel-body">{{ lang['comments:group.inform'] }}</div>
-		<div class="table-responsive">
+		<div id="userTabs-inform" class="tab-pane">
 			<table class="table table-striped">
 				<tr>
 					<td width="50%">{{ lang['comments:inform_author'] }} <small class="form-text text-muted">{{ lang['comments:inform_author#desc'] }}</small></td>
@@ -125,13 +104,13 @@
 				</tr>
 			</table>
 		</div>
-		</div>
-	</div>
 	
+		<div class="panel-footer" style="margin-left: -20px;margin-right: -20px;margin-bottom: -20px;">
+			<center><button type="submit" name="submit" class="btn btn-outline-success">{{ lang['comments:save'] }}</button></center>
+		</div>		
+	
+  		</div>
+	</div>
 </div>
-			
-	<div class="form-group my-3 text-center">
-		<button type="submit" name="submit" class="btn btn-outline-success">{{ lang['comments:save'] }}</button>
-	</div>			
-  
+
 </form>

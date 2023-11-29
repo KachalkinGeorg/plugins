@@ -17,16 +17,27 @@
 					[quote]<li><a rel="nofollow" onmouseover="copy_quote('{author}');" onclick="quote();return false;" style="cursor: pointer;">Ответить</a></li>[/quote]
 					<li>[edit-com]Изменить[/edit-com]</li>
 					<li>[del-com]Удалить[/del-com]
-						<div class="modal">
-							<div class="modal-close" onclick="this.parentNode.style.display='none';"><i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></div>
-								<div style="padding: 22px;">
-								<div style="text-align: center;">Удалить комментарий <b>#{comnum}</b>?</div>
+
+					<div id="delcom{id}" class="popup">
+						<div class="popup-wrapper">
+							<div class="popup-inner">
+								<div class="popup-header">
+								<div class="popup-title">Удалить комментарий <b>#{comnum}</b>?</div>
+									<a href="#close" title="Закрыть" class="popup-close"></a>
+								</div>
+								<div class="popup-text">
 								<br>
-								Вы действительно хотите удалить комментарий от <b>{author}</b>?
-								<br><br>
-								<div style="text-align: right;">{delcom}</div>
+									Вы действительно хотите удалить комментарий от <b>{author}</b>?
+								<br>
+								</div>
+								<div class="popup-footer">
+									<div style="text-align: right;padding: 8px;">{delcom}</div>
+								</div>
+								
 							</div>
-						</div>
+						</div>	
+					</div>
+
 					</li>
 				</ul>
 				[/if-have-perm]
