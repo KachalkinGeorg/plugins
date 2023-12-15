@@ -15,7 +15,7 @@
 		var trows = $("#tdataTable >tbody");
 
 		var irows;
-		if (initMode) {
+		if (initMode && tblData.length > 0) {
 			irows = tblData;
 		} else {
 			// Scan default values
@@ -39,13 +39,13 @@
 				// ** TEXT ELEMENT **
 				if (tblConfig[cfgRow]['type'] == 'text') {
 					var t = $("<td>").appendTo(trow);
-					$("<input>").val(irows[dataRow][cfgRow]).appendTo(t);
+					$("<input>").attr('class', ' form-control').val(irows[dataRow][cfgRow]).appendTo(t);
 				}
 
 				// ** SELECT ELEMENT **
 				if (tblConfig[cfgRow]['type'] == 'select') {
 					var t = $("<td>").appendTo(trow);
-					var s = $("<select>").appendTo(t);
+					var s = $("<select>").attr('class', ' form-control').appendTo(t);
 
 					for (var opt in tblConfig[cfgRow]['options']) {
 						$("<option>").val((tblConfig[cfgRow]['storekeys']) ? opt : tblConfig[cfgRow]['options'][opt]).html(tblConfig[cfgRow]['options'][opt]).appendTo(s);
@@ -54,12 +54,15 @@
 				}
 			}
 			var t = $("<td>").appendTo(trow);
-			$("<a>")
-				.html(
-					$("<img>")
-						.attr("src", "{{ skins_url }}/images/delete.gif")
-				)
-				.attr("href", "#")
+        t.attr("class", "text-center");
+        t.attr("width", "10");
+		$("<a>")
+			.html(
+				$("<i>")
+				.attr("class", "fa fa-trash")
+			)
+			.attr("type", "button")
+			.attr("class", "btn btn-sm btn-danger")
 				.bind("click", function () {
 					$(this).parent().parent().remove();
 					return false;

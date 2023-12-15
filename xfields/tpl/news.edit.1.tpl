@@ -1,3 +1,4 @@
+{% if (entryCount > 0) %}
 <tr class="thead-dark">
 	<th colspan="2">
 		{{ lang['xfields_group_title'] }}
@@ -11,3 +12,4 @@
 	<td valign="top">{{ entry.input }}</td>
 </tr>
 {% endfor %}
+{% endif %}

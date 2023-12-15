@@ -875,6 +875,7 @@ class XFieldsNewsFilter extends NewsFilter
                             unset($timglist);
                         }
                     }
+					$imgInfo = preg_replace_callback ( "#<(img|iframe)(.+?)>#i", "enable_lazyload", $imglist );
                     //					if ($xfk && count($ilist = explode(",", $xfk)) && count($imglist = $mysql->select("select * from ".prefix."_images where id in (".$xfk.")"))) {
                     if (count($imglist)) {
                         // Yes, show field block

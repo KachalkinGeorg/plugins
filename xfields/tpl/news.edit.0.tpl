@@ -1,3 +1,4 @@
+{% if (entryCount > 0) %}
 <tr class="thead-light">
 	<th colspan="2">
 		{{ lang['xfields_group_title'] }}
@@ -41,4 +42,5 @@
 		</table>
 	</td>
 </tr>
+{% endif %}
 {% endif %}

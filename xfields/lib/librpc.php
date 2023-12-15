@@ -5,7 +5,7 @@
 //
 function xfields_rpc_group_modify($params)
 {
-    global $userROW;
+    global $userROW, $lang;
     include_once root.'plugins/xfields/xfields.php';
     if (!is_array($xf = xf_configLoad())) {
         $xf = [];
@@ -91,25 +91,30 @@ function xfields_rpc_group_modify($params)
                 return ['status' => 0, 'errorCode' => 8, 'errorText' => 'Field is not a member of the group'];
             }
             $position = array_search($fldId, $xf['grp.news'][$grpId]['entries']);
+            $msg = $lang['xfields_msgi_not_changed'];
+
             // Decide an action
             if ($params['action'] == 'fldDel') {
                 unset($xf['grp.news'][$grpId]['entries'][$position]);
+                $msg = $lang['xfields_msgi_deleted'];
             }
             if (($params['action'] == 'fldUp') && ($position > 0)) {
                 $tmp = $xf['grp.news'][$grpId]['entries'][$position - 1];
                 $xf['grp.news'][$grpId]['entries'][$position - 1] = $xf['grp.news'][$grpId]['entries'][$position];
                 $xf['grp.news'][$grpId]['entries'][$position] = $tmp;
+                $msg = $lang['xfields_msgi_moved_up'];
             }
             if (($params['action'] == 'fldDown') && (($position + 1) < count($xf['grp.news'][$grpId]['entries']))) {
                 $tmp = $xf['grp.news'][$grpId]['entries'][$position + 1];
                 $xf['grp.news'][$grpId]['entries'][$position + 1] = $xf['grp.news'][$grpId]['entries'][$position];
                 $xf['grp.news'][$grpId]['entries'][$position] = $tmp;
+                $msg = $lang['xfields_msgi_moved_down'];
             }
             $xf['grp.news'][$grpId]['entries'] = array_values($xf['grp.news'][$grpId]['entries']);
             xf_configSave($xf);
 
             // Notify about changes
-            return ['status' => 1, 'errorCode' => 0, 'errorText' => 'Field was deleted/moved up/moved down', 'config' => $xf['grp.news']];
+            return ['status' => 1, 'errorCode' => 0, 'errorText' => $msg, 'config' => $xf['grp.news']];
     }
 
     return ['status' => 1, 'errorCode' => 0, 'errorText' => 'OK, '.var_export($params, true)];

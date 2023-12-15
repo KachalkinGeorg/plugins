@@ -1,5 +1,3 @@
-{% include 'plugins/xfields/tpl/navi.tpl' %}
-
 {% if not(xfields|length) %}
 <div class="alert alert-info">
 	<h5>{{ lang['msgi_info'] }}</h5>

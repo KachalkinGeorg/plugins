@@ -248,20 +248,16 @@
 					</td>
 				</tr>
 				{% if (sectionID != 'tdata') %}
+
 				<tr>
 					<td width="50%" colspan="2">
 						{{ lang.xfconfig['block_location'] }}
-					</td>
-					<td width="50%">
-						<div class="input-group">
-							<input type="number" name="area" value="{{ area }}" class="form-control" />
-							<div class="input-group-append">
-								<a class="btn btn-outline-primary" data-toggle="popover" data-placement="left" data-trigger="focus" data-html="true" data-content="{{ lang.xfconfig['block_location#descr'] }}" tabindex="0">
-									<i class="fa fa-question"></i>
-								</a>
-							</div>
-						</div>
-
+					</td>		
+					<td width="50%">					
+                    <select name="area" class="form-control">
+                        <option value="1" {{ main_selected }}>{{ lang['extends_main'] }}</option>
+                        <option value="0" {{ additional_selected }}>{{ lang['extends_additional'] }}</option>
+                    </select>
 					</td>
 				</tr>
 				{% endif %}

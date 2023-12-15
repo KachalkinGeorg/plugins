@@ -17,6 +17,7 @@ $sectionID = $_REQUEST['section'];
 if (!in_array($sectionID, ['news', 'grp.news', 'users', 'grp.users', 'tdata'])) {
     $sectionID = 'news';
 }
+
 switch ($_REQUEST['action']) {
     case 'add':
         showAddEditForm();
@@ -33,10 +34,13 @@ switch ($_REQUEST['action']) {
     case 'update':
         doUpdate();
         break;
+    case 'about':
+        about();
+        break;
     default:
         showList();
 }
-//
+
 // Показать список полей
 function showList()
 {
@@ -48,16 +52,39 @@ function showList()
     }
 }
 
+function about(){
+	global $twig, $lang, $breadcrumb, $sectionID;
+
+	$tpath = locatePluginTemplates(array('config/main', 'config/about'), 'xfields', 1);
+	$breadcrumb = breadcrumb('<i class="fa fa-list-alt btn-position"></i><span class="text-semibold">Дополнительный поля</span>', array('?mod=extras' => '<i class="fa fa-puzzle-piece btn-position"></i>'.$lang['extras'].'', '?mod=extra-config&plugin=xfields&section='.$sectionID.'' => '<i class="fa fa-list-alt btn-position"></i>Дополнительные поля', '<i class="fa fa-exclamation-circle btn-position"></i>О плагине' ) );
+
+	$about = 'версия 0.31';
+	
+	$tVars = array(
+		'about' => $about,
+	);
+	
+	$xt = $twig->loadTemplate($tpath['config/about'].'config/about.tpl');
+	$xg = $twig->loadTemplate($tpath['config/main'].'config/main.tpl');
+
+	$tVars = array(
+		'sectionID' => 'active',
+		'entries' 	=> $xt->render($tVars),
+	);
+	
+	print $xg->render($tVars);
+}
+
 //
-//
-function showSectionList()
-{
+function showSectionList() {
     global $xf, $lang, $tpl, $twig, $sectionID, $breadcrumb;
 	
-	$breadcrumb = breadcrumb('<i class="fa fa-list-alt btn-position"></i><span class="text-semibold">Дополнительный поля</span>', array('?mod=extras' => '<i class="fa fa-puzzle-piece btn-position"></i>'.$lang['extras'].'', '<i class="fa fa-list-alt btn-position"></i>'.$lang['xfconfig']['section.'.$sectionID].'' ) );
+	$tpath = locatePluginTemplates(array('config/main', 'config/groups'), 'xfields', 1);
+	$breadcrumb = breadcrumb('<i class="fa fa-list-alt btn-position"></i><span class="text-semibold">Дополнительный поля</span>', array('?mod=extras' => '<i class="fa fa-puzzle-piece btn-position"></i>'.$lang['extras'].'', '?mod=extra-config&plugin=xfields&section='.$sectionID.'' => '<i class="fa fa-list-alt btn-position"></i>Дополнительные поля', $lang['xfconfig']['section.'.$sectionID] ) );
 
     $output = '';
     //$output .= "<pre>".var_export($xf[$sectionID], true)."</pre>";
+	
     $tVars = [
         'sectionID' => $sectionID,
         'section_name' => $lang['xfconfig']['section.'.$sectionID],
@@ -65,6 +92,7 @@ function showSectionList()
 		'global' => $lang['xfconfig']['section.'.$sectionID],
         'groups' => [],
     ];
+	
     // Prepare data
     $groups = [];
     foreach ($xf['grp.news'] as $k => $v) {
@@ -74,20 +102,35 @@ function showSectionList()
         ];
     }
 
-    $xt = $twig->loadTemplate('plugins/xfields/tpl/groups.tpl');
-    echo $xt->render($tVars);
+    foreach (array('news', 'grp.news', 'users', 'grp.users', 'tdata') as $cID)
+        $tVars['class'][$cID] = ($cID == $sectionID) ? 'active' : '';
+
+    $tVars['json']['groups.config'] = json_encode($grpNews);
+    $tVars['json']['fields.config'] = json_encode($xf['news']);
+	
+	$xt = $twig->loadTemplate($tpath['config/groups'].'config/groups.tpl');
+	$xg = $twig->loadTemplate($tpath['config/main'].'config/main.tpl');
+
+	$tVars = array(
+		'sectionID' => $sectionID,
+		'entries' 	=> $xt->render($tVars)
+	);
+	
+	print $xg->render($tVars);
 }
 
 //
 // Показать список доп. полей
-function showFieldList()
-{
+function showFieldList() {
     global $xf, $lang, $twig, $sectionID, $breadcrumb;
 	
-	$breadcrumb = breadcrumb('<i class="fa fa-list-alt btn-position"></i><span class="text-semibold">Дополнительный поля</span>', array('?mod=extras' => '<i class="fa fa-puzzle-piece btn-position"></i>'.$lang['extras'].'', '<i class="fa fa-list-alt btn-position"></i>'.$lang['xfconfig']['section.'.$sectionID].'' ) );
+	$tpath = locatePluginTemplates(array('config/main', 'config/config'), 'xfields', 1);
+	$breadcrumb = breadcrumb('<i class="fa fa-list-alt btn-position"></i><span class="text-semibold">Дополнительный поля</span>', array('?mod=extras' => '<i class="fa fa-puzzle-piece btn-position"></i>'.$lang['extras'].'', '?mod=extra-config&plugin=xfields&section='.$sectionID.'' => '<i class="fa fa-list-alt btn-position"></i>Дополнительные поля', $lang['xfconfig']['section.'.$sectionID] ) );
 
     $xEntries = [];
     $output = '';
+    if (isset($xf[$sectionID]) and is_array($xf[$sectionID])) {
+
     foreach ($xf[$sectionID] as $id => $data) {
         $storage = '';
         if ($data['storage']) {
@@ -104,7 +147,8 @@ function showFieldList()
             'linkdel'  => '?mod=extra-config&plugin=xfields&action=update&subaction=del&section='.$sectionID.'&field='.$id,
 			'modal'    => print_modal_dialog($id, 'Удалить '.$id.'', 'Вы уверены, что хотите удалить ID поля - '.$id.' имя - '.$data['title'].'?', '<a href="?mod=extra-config&plugin=xfields&action=update&subaction=del&section='.$sectionID.'&field='.$id.'" class="btn btn-outline-success">да</a>'),
             'area'     => (intval($data['area']) > 0) ? intval($data['area']) : '',
-            'flags'    => [
+            'extends' => $lang['extends_' . (!empty($data['extends']) ? $data['extends'] : 'additional')],
+             'flags'    => [
                 'required' => $data['required'] ? true : false,
                 'default'  => (($data['default'] != '') || ($data['type'] == 'checkbox')) ? true : false,
                 'disabled' => $data['disabled'] ? true : false,
@@ -119,7 +163,9 @@ function showFieldList()
         }
         $xEntry['options'] = $options;
         $xEntries[] = $xEntry;
+        }
     }
+
     if (!count($xf[$sectionID])) {
         $output = $lang['xfconfig']['nof'];
     }
@@ -129,23 +175,36 @@ function showFieldList()
 		'global' => $lang['xfconfig']['section.'.$sectionID],
         'sectionID'    => $sectionID,
     ];
+	
+    foreach (array('news', 'grp.news', 'users', 'grp.users', 'tdata') as $cID)
+        $tVars['class'][$cID] = ($cID == $sectionID) ? 'active' : '';
 
-    $xt = $twig->loadTemplate('plugins/xfields/tpl/config.tpl');
-    echo $xt->render($tVars);
+	$xt = $twig->loadTemplate($tpath['config/config'].'config/config.tpl');
+	$xg = $twig->loadTemplate($tpath['config/main'].'config/main.tpl');
+
+	$tVars = array(
+		'sectionID' => $sectionID,
+		'entries' 	=> $xt->render($tVars)
+	);
+	
+	print $xg->render($tVars);
 }
 
 //
 //
-function showAddEditForm($xdata = '', $eMode = null, $efield = null)
-{
+function showAddEditForm($xdata = '', $eMode = null, $efield = null) {
     global $xf, $lang, $sectionID, $twig, $breadcrumb;
+	
     $field = ($efield == null) ? $_REQUEST['field'] : $efield;
+	
     if ($eMode == null) {
         $editMode = (is_array($xf[$sectionID][$field])) ? 1 : 0;
     } else {
         $editMode = $eMode;
     }
+	
     $tVars = [];
+	
     if ($editMode) {
         $data = is_array($xdata) ? $xdata : $xf[$sectionID][$field];
         $tVars['flags']['editMode'] = 1;
@@ -158,18 +217,24 @@ function showAddEditForm($xdata = '', $eMode = null, $efield = null)
             'storage'      => intval($data['storage']),
             'db_type'      => $data['db.type'],
             'db_len'       => (intval($data['db.len']) > 0) ? intval($data['db.len']) : '',
-            'area'         => (intval($data['area']) > 0) ? intval($data['area']) : '',
+            /* 'area'         => (intval($data['area']) > 0) ? intval($data['area']) : '', */
+			'main_selected' => ($data['area'] == '1') ? 'selected' : '',
+			'additional_selected' => ($data['area'] == '0') ? 'selected' : '',
             'bb_support'   => $data['bb_support'] ? 'checked="checked"' : '',
             'html_support' => $data['html_support'] ? 'checked="checked"' : '',
             'noformat'     => $data['noformat'] ? 'checked="checked"' : '',
         ];
+		
         $xsel = '';
+		
         foreach (['text', 'textarea', 'select', 'multiselect', 'checkbox', 'images'] as $ts) {
             $tVars['defaults'][$ts] = ($data['type'] == $ts) ? (($ts == 'checkbox') ? ($data['default'] ? ' checked="checked"' : '') : $data['default']) : '';
             $xsel .= '<option value="'.$ts.'"'.(($data['type'] == $ts) ? ' selected' : '').'>'.$lang['xfields_type_'.$ts];
         }
+		
         $sOpts = [];
         $fNum = 1;
+		
         if ($data['type'] == 'select') {
             if (is_array($data['options'])) {
                 foreach ($data['options'] as $k => $v) {
@@ -178,11 +243,14 @@ function showAddEditForm($xdata = '', $eMode = null, $efield = null)
                 }
             }
         }
+		
         if (!count($sOpts)) {
             array_push($sOpts, '<tr><td><input size="12" name="so_data[1][0]" type="text" value=""/></td><td><input type="text" size="55" name="so_data[1][1]" value=""/></td><td><a href="#" onclick="return false;"><img src="'.skins_url.'/images/delete.gif" alt="DEL" width="12" height="12" /></a></td></tr>');
         }
+		
         $m_sOpts = [];
         $fNum = 1;
+		
         if ($data['type'] == 'multiselect') {
             if (is_array($data['options'])) {
                 foreach ($data['options'] as $k => $v) {
@@ -191,9 +259,11 @@ function showAddEditForm($xdata = '', $eMode = null, $efield = null)
                 }
             }
         }
+		
         if (!count($m_sOpts)) {
             array_push($m_sOpts, '<tr><td><input size="12" name="mso_data[1][0]" type="text" value=""/></td><td><input type="text" size="55" name="mso_data[1][1]" value=""/></td><td><a href="#" onclick="return false;"><img src="'.skins_url.'/images/delete.gif" alt="DEL" width="12" height="12" /></a></td></tr>');
         }
+		
         $tVars = $tVars + [
             'sOpts'          => implode("\n", $sOpts),
             'm_sOpts'        => implode("\n", $m_sOpts),
@@ -206,6 +276,7 @@ function showAddEditForm($xdata = '', $eMode = null, $efield = null)
                 'thumbHeight' => intval($data['thumbHeight']),
             ],
         ];
+		
         foreach (['imgStamp', 'imgShadow', 'imgThumb', 'thumbStamp', 'thumbShadow'] as $k) {
             $tVars['images'][$k] = intval($data[$k]) ? 'checked="checked"' : '';
         }
@@ -227,11 +298,13 @@ function showAddEditForm($xdata = '', $eMode = null, $efield = null)
             'db_type' => '',
             'db_len'  => '',
         ];
+		
         $xsel = '';
         foreach (['text', 'textarea', 'select', 'multiselect', 'checkbox', 'images'] as $ts) {
             $tVars['defaults'][$ts] = '';
             $xsel .= '<option value="'.$ts.'"'.(($data['type'] == 'text') ? ' selected' : '').'>'.$lang['xfields_type_'.$ts];
         }
+		
         $tVars = $tVars + [
             'type_opts'      => $xsel,
             'storekeys_opts' => '<option value="0">Сохранять значение</option><option value="1">Сохранять код</option>',
@@ -243,22 +316,32 @@ function showAddEditForm($xdata = '', $eMode = null, $efield = null)
                 'thumbHeight' => '150',
             ],
         ];
+		
         foreach (['imgStamp', 'imgShadow', 'imgThumb', 'thumbStamp', 'thumbShadow'] as $k) {
             $tVars['images'][$k] = '';
         }
     }
 	
+    $tVars['sectionID'] = $sectionID;
+
 	if ($editMode) {
 		$addedit = ''.$lang['xfields_title_edit'].' - '.$field.'';
 	}else{
 		$addedit = ''.$lang['xfields_title_add'].'';
 	}
 
-	$breadcrumb = breadcrumb('<i class="fa fa-list-alt btn-position"></i><span class="text-semibold">Дополнительный поля</span>', array('?mod=extras' => '<i class="fa fa-puzzle-piece btn-position"></i>Управление плагинами', '?mod=extra-config&plugin=xfields&section='.$sectionID.'' => '<i class="fa fa-list-alt btn-position"></i>Дополнительные поля', '<i class="fa fa-list-alt btn-position"></i>'.$addedit.'' ) );
+	$tpath = locatePluginTemplates(array('config/main', 'config/config_edit'), 'xfields', 1);
+	$breadcrumb = breadcrumb('<i class="fa fa-list-alt btn-position"></i><span class="text-semibold">Дополнительный поля</span>', array('?mod=extras' => '<i class="fa fa-puzzle-piece btn-position"></i>Управление плагинами', '?mod=extra-config&plugin=xfields&section='.$sectionID.'' => '<i class="fa fa-list-alt btn-position"></i>Дополнительные поля', $addedit ) );
 
-    $tVars['sectionID'] = $sectionID;
-    $xt = $twig->loadTemplate('plugins/xfields/tpl/config_edit.tpl');
-    echo $xt->render($tVars);
+	$xt = $twig->loadTemplate($tpath['config/config_edit'].'config/config_edit.tpl');
+	$xg = $twig->loadTemplate($tpath['config/main'].'config/main.tpl');
+
+	$tVars = array(
+		'sectionID' => $sectionID,
+		'entries' 	=> $xt->render($tVars)
+	);
+	
+	print $xg->render($tVars);
 }
 
 //
@@ -290,15 +373,16 @@ function doAddEdit()
     }
     // Let's fill parameters
     $data['title'] = $_REQUEST['title'];
-    $data['required'] = intval($_REQUEST['required']);
-    $data['disabled'] = intval($_REQUEST['disabled']);
+    $data['required'] = isset($_REQUEST['required']) ? intval($_REQUEST['required']) : 0;
+    $data['disabled'] = isset($_REQUEST['disabled']) ? intval($_REQUEST['disabled']) : 0;
     $data['area'] = intval($_REQUEST['area']);
+	$data['extends'] = isset($_REQUEST['extends']) ? $_REQUEST['extends'] : 'additional';
     $data['type'] = $_REQUEST['type'];
     $data['bb_support'] = $_REQUEST['bb_support'] ? 1 : 0;
     $data['default'] = '';
-    if (($sectionID == 'users') && ($data['type'] != 'images')) {
+    if (($sectionID == 'users') && ($data['type'] != 'images'))
         $data['regpage'] = intval($_REQUEST['regpage']);
-    }
+
     switch ($data['type']) {
         case 'checkbox':
             $data['default'] = $_REQUEST['checkbox_default'] ? 1 : 0;
@@ -553,7 +637,9 @@ function doAddEdit()
             'editMode' => $editMode ? true : false,
         ],
     ];
-	
+
+    $tVars['sectionID'] = $sectionID;
+
 	if ($editMode){
 		print_msg( 'update', 'Дополнительные поля', 'Поле '.$field.' успешно отредактировано!', array('?mod=extra-config&plugin=xfields&action=add&section='.$sectionID.'' => 'Добавить еще', '?mod=extra-config&plugin=xfields&action=edit&section='.$sectionID.'&field='.$field => 'Редактировать еще', '?mod=extra-config&plugin=xfields&section='.$sectionID.'' => 'Вернуться назад' ) );
 	}else{
@@ -593,31 +679,30 @@ function doUpdate()
             }
             unset($XF[$sectionID][$field]);
             $notif = $lang['xfields_done_del'];
-			msg(['type' => 'info', 'text' => $lang['xfields_done_del']]);
 			print_msg( 'delete', 'Дополнительные поля', 'Поле '.$field.' успешно было удалено!', array('?mod=extra-config&plugin=xfields&action=add&section='.$sectionID.'' => 'Добавить еще', '?mod=extra-config&plugin=xfields&section='.$sectionID.'' => 'Вернуться назад' ) );
             break;
         case 'up':
             array_key_move($XF[$sectionID], $field, -1);
             $notif = $lang['xfields_done_up'];
-			msg(['type' => 'info', 'text' => $lang['xfields_done_up']]);
 			showList();
             break;
         case 'down':
             array_key_move($XF[$sectionID], $field, 1);
             $notif = $lang['xfields_done_down'];
-			msg(['type' => 'info', 'text' => $lang['xfields_done_down']]);
 			showList();
             break;
         default:
             $notif = $lang['xfields_updateunk'];
-			msg(['type' => 'info', 'text' => $lang['xfields_updateunk']]);
 			print_msg( 'warning', 'Дополнительные поля', $lang['xfields_updateunk'], 'javascript:history.go(-1)' );
     }
-    if (!xf_configSave()) {
-        msg(['type' => 'error', 'text' => $lang['xfields_msge_errcsave']]);
 
+    if (!xf_configSave() or $error) {
+        msg(['type' => 'error', 'text' => $lang['xfields_msge_errcsave']]);
         return;
+    } else {
+        msg(array('text' => $notif));
     }
+
     $xf = $XF;
 }
 
