@@ -223,7 +223,7 @@ function pm_delete() {
 		}
 		$mysql->query("DELETE FROM " . prefix . "_pm WHERE `id` IN (" . join(',', $selected_pm) . ") AND ((`from_id`=" . db_squote($userROW['id']) . " AND `folder`='outbox') OR (`to_id`=" . db_squote($userROW['id']) . ") AND `folder`='inbox')");
 		$mysql->query("UPDATE " . uprefix . "_users SET `pm_sync` = 0 WHERE `id` = " . db_squote($userROW['id']));
-		msg(array("text" => $lang['pm:msgo_deleted'] . str_replace('{url}', INBOX_LINK, $lang['pm:html_reload'])));
+		msg(array("type" => "info", "text" => $lang['pm:msgo_deleted'] . str_replace('{url}', INBOX_LINK, $lang['pm:html_reload'])));
 	} else {
 		$row = $mysql->record("SELECT id, viewed, folder FROM " . prefix . "_pm WHERE `id`=" . db_squote($pmid) . " AND ((`from_id`=" . db_squote($userROW['id']) . " AND `folder`='outbox') OR (`to_id`=" . db_squote($userROW['id']) . ") AND `folder`='inbox')");
 		if ($row) {
@@ -235,7 +235,7 @@ function pm_delete() {
 				else
 					$mysql->query("UPDATE " . uprefix . "_users SET `pm_all` = `pm_all` - 1, `pm_unread` = `pm_unread` - 1 WHERE `id` = " . db_squote($userROW['id']));
 			}
-			msg(array("text" => $lang['pm:msgo_deleted_one'] . str_replace('{url}', INBOX_LINK, $lang['pm:html_reload'])));
+			msg(array("type" => "info", "text" => $lang['pm:msgo_deleted_one'] . str_replace('{url}', INBOX_LINK, $lang['pm:html_reload'])));
 		} else
 			msg(array("type" => "error", "text" => $lang['pm:msge_bad_del'] . str_replace('{url}', INBOX_LINK, $lang['pm:html_reload'])));
 	}
@@ -249,7 +249,7 @@ function pm_write() {
 	$tVars = array(
 		'php_self'  => $PHP_SELF,
 		'username'  => trim($_REQUEST['name']),
-		'quicktags' => BBCodes('pm_content')
+		'quicktags'  => ($config['use_bbcodes']) ? BBCodes('pm_content') : '',
 	);
 	$tVars['smilies'] = ($config['use_smilies'] == "1") ? InsertSmilies('', 10, 'pm_content') : '';
 	$xt = $twig->loadTemplate($tpath['write'] . 'write.tpl');
@@ -264,7 +264,7 @@ function pm_send() {
 	$status = $pm->sendMsg($_POST['to_username'], $userROW['id'], $_POST['title'], $_POST['content'], false, $_POST['saveoutbox']);
 	# if all right
 	if (!$status) {
-		msg(array("text" => $lang['pm:msgo_sent'] . str_replace('{url}', INBOX_LINK, $lang['pm:html_reload'])));
+		msg(array("type" => "info", "text" => $lang['pm:msgo_sent'] . str_replace('{url}', INBOX_LINK, $lang['pm:html_reload'])));
 
 		return 0;
 	}
@@ -340,7 +340,7 @@ function pm_reply() {
 			'pmid'        => $row['id'],
 			'title'       => 'Re:' . $row['subject'],
 			'to_username' => $row['from_id'],
-			'quicktags'   => BBCodes('pm_content')
+			'quicktags'   => ($config['use_bbcodes']) ? BBCodes('pm_content') : '',
 		);
 		$tVars['smilies'] = ($config['use_smilies'] == "1") ? InsertSmilies('', 10, 'pm_content') : '';
 		$xt = $twig->loadTemplate($tpath['reply'] . 'reply.tpl');

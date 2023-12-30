@@ -43,7 +43,7 @@ class pm {
 	 */
 	function sendMsg($to_user, $from_username, $title, $message, $mail_from = false, $saveoutbox = 0) {
 
-		global $lang, $mysql, $config;
+		global $lang, $mysql, $config, $userROW;
 		
 		$title_length = pluginGetVariable('pm', 'title_length') ? pluginGetVariable('pm', 'title_length') : 50;
 		$message_length = pluginGetVariable('pm', 'message_length') ? pluginGetVariable('pm', 'message_length') : 3000;
@@ -77,8 +77,8 @@ class pm {
 			$msg_link = generatePluginLink('pm', null, array('pmid' => $id, 'action' => 'read'), array(), false, true);
 			$set_link = generatePluginLink('pm', null, array('action' => 'set'), array(), false, true);
 			sendEmailMessage($torow['mail'],
-				$lang['pm:email_subject'],
-				str_replace(array('{message}', '{url}', '{url-2}'), array($message, $msg_link, $set_link), $lang['pm:email_body']),
+				str_replace('{home}', $config['home_url'], $lang['pm:email_subject']),
+				str_replace(array('{message}', '{to_user}', '{from_user}', '{home}', '{url}', '{url-2}'), array($message, $to_user, $userROW['name'], $config['home_url'], $msg_link, $set_link), $lang['pm:email_body']),
 				false, $mail_from);
 		}
 

@@ -1,5 +1,5 @@
 <br/>
-
+<script type="text/javascript">var pm_content = 'pm_content';</script>
 <div id="pm">
 	<form method=post name=form action="{{ php_self }}?action=send">
 		<input type="hidden" name="title" value="{{ title }}">
